@@ -4,7 +4,7 @@ const path = require("path");
 const express = require("express");
 const multer = require("multer");
 const JSZip = require("jszip");
-const puppeteer = require("puppeteer");
+const { launchBrowser } = require("./browser-launcher");
 const { buildPdfOptions, htmlBufferToPdfBuffer } = require("./html-to-pdf");
 
 const app = express();
@@ -45,7 +45,7 @@ app.post("/api/convert", upload.array("htmlFiles", 100), async (req, res) => {
       marginLeft: req.body.marginLeft,
     });
 
-    const browser = await puppeteer.launch({ headless: "new" });
+    const browser = await launchBrowser();
     try {
       const zip = new JSZip();
       for (const file of htmlFiles) {

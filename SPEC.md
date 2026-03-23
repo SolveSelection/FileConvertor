@@ -56,12 +56,25 @@ Developers and automation scripts that need deterministic HTML-to-PDF output.
 
 ## 6. Technical Design
 - Language: Node.js.
-- Renderer: `puppeteer` for headless Chromium PDF generation.
+- Renderer:
+  - Local/dev: `puppeteer`.
+  - Vercel/serverless: `puppeteer-core` + `@sparticuz/chromium`.
+  - Shared launcher abstraction in `browser-launcher.js` chooses runtime automatically via `VERCEL` env.
 - Implementation files:
+  - `browser-launcher.js` (runtime-aware Chromium launcher)
   - `html-to-pdf.js` (CLI + reusable conversion logic)
   - `server.js` (web server + upload endpoint)
   - `public/index.html`, `public/styles.css`, `public/app.js` (UI)
   - `package.json` (dependencies + scripts)
+
+## 6.1 Vercel Deployment Notes
+- For Vercel runtime, launch options must use Chromium values from `@sparticuz/chromium`:
+  - `executablePath`
+  - `args`
+  - `headless`
+  - `defaultViewport`
+- Browser launch must use `puppeteer-core` in Vercel runtime and avoid relying on bundled desktop Chrome.
+- Local runtime should continue to use standard `puppeteer` for easiest development setup.
 
 ## 7. CLI Contract
 Single-file example:

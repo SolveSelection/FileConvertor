@@ -4,7 +4,7 @@
 const fs = require("fs");
 const path = require("path");
 const { pathToFileURL } = require("url");
-const puppeteer = require("puppeteer");
+const { launchBrowser } = require("./browser-launcher");
 
 function printUsage() {
   console.log(`Usage:
@@ -161,7 +161,7 @@ async function convertFile(browser, inputPath, outputPath, pdfOptions) {
 }
 
 async function convertSingle(options) {
-  const browser = await puppeteer.launch({ headless: "new" });
+  const browser = await launchBrowser();
   try {
     await convertFile(
       browser,
@@ -196,7 +196,7 @@ function getBatchPairs(inputDirPath, outputDirPath) {
 async function convertBatch(options) {
   fs.mkdirSync(options.outputDirPath, { recursive: true });
   const pairs = getBatchPairs(options.inputDirPath, options.outputDirPath);
-  const browser = await puppeteer.launch({ headless: "new" });
+  const browser = await launchBrowser();
   try {
     for (const pair of pairs) {
       await convertFile(
