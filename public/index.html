@@ -9,36 +9,69 @@
   <body>
     <main class="container">
       <section class="card">
-        <h1>HTML to PDF Converter</h1>
-        <p class="subtitle">
-          Upload multiple HTML files and download a ZIP with matching PDF names.
-        </p>
+        <div class="hero">
+          <h1>HTML to PDF Converter</h1>
+          <p class="subtitle">
+            Convert one or many HTML files and download a ZIP of generated PDFs.
+          </p>
+        </div>
 
         <form id="convertForm">
-          <label class="label" for="htmlFiles">HTML files</label>
-          <input id="htmlFiles" name="htmlFiles" type="file" accept=".html" multiple required />
-
-          <div class="grid">
-            <div>
-              <label class="label" for="format">Format</label>
-              <select id="format" name="format">
-                <option value="A4" selected>A4</option>
-                <option value="Letter">Letter</option>
-                <option value="Legal">Legal</option>
-              </select>
+          <section class="panel">
+            <div class="panel-head">
+              <label class="label">HTML files</label>
+              <div class="actions">
+                <button id="addFilesBtn" class="btn btn-secondary" type="button">
+                  Add more files
+                </button>
+                <button
+                  id="removeFilesBtn"
+                  class="btn btn-danger"
+                  type="button"
+                  disabled
+                >
+                  Remove selected
+                </button>
+              </div>
             </div>
-            <div>
-              <label class="label" for="scale">Scale (0.1 - 2)</label>
-              <input id="scale" name="scale" type="number" min="0.1" max="2" step="0.1" value="1" />
+
+            <input
+              id="htmlFilesPicker"
+              type="file"
+              accept=".html"
+              multiple
+              class="hidden-input"
+            />
+
+            <p id="emptyState" class="empty-state">
+              No files selected yet. Click <strong>Add more files</strong>.
+            </p>
+            <ul id="fileList" class="file-list" aria-live="polite"></ul>
+          </section>
+
+          <section class="panel">
+            <div class="grid">
+              <div>
+                <label class="label" for="format">Format</label>
+                <select id="format" name="format">
+                  <option value="A4" selected>A4</option>
+                  <option value="Letter">Letter</option>
+                  <option value="Legal">Legal</option>
+                </select>
+              </div>
+              <div>
+                <label class="label" for="scale">Scale (0.1 - 2)</label>
+                <input id="scale" name="scale" type="number" min="0.1" max="2" step="0.1" value="1" />
+              </div>
             </div>
-          </div>
 
-          <div class="checkboxes">
-            <label><input id="landscape" name="landscape" type="checkbox" /> Landscape</label>
-            <label><input id="printBackground" name="printBackground" type="checkbox" checked /> Print background</label>
-          </div>
+            <div class="checkboxes">
+              <label><input id="landscape" name="landscape" type="checkbox" /> Landscape</label>
+              <label><input id="printBackground" name="printBackground" type="checkbox" checked /> Print background</label>
+            </div>
+          </section>
 
-          <button id="submitBtn" type="submit">Convert Files</button>
+          <button id="submitBtn" class="btn btn-primary" type="submit">Convert files</button>
         </form>
 
         <p id="status" class="status"></p>

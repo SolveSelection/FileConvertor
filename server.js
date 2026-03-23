@@ -18,6 +18,14 @@ const upload = multer({
 
 app.use(express.static(path.join(__dirname, "public")));
 
+function buildArchiveName(htmlFiles) {
+  const firstBaseName = path.parse(htmlFiles[0].originalname).name;
+  const words = firstBaseName.trim().split(/\s+/).filter(Boolean);
+  const normalizedBase = words.length > 2 ? words.slice(0, 2).join(" ") : firstBaseName;
+  const safeBase = normalizedBase.replace(/[\\/:*?"<>|]/g, "-").trim() || "converted-pdfs";
+  return `${safeBase}.zip`;
+}
+
 app.post("/api/convert", upload.array("htmlFiles", 100), async (req, res) => {
   try {
     const files = req.files || [];
@@ -59,10 +67,11 @@ app.post("/api/convert", upload.array("htmlFiles", 100), async (req, res) => {
       }
 
       const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
+      const archiveName = buildArchiveName(htmlFiles);
       res.setHeader("Content-Type", "application/zip");
       res.setHeader(
         "Content-Disposition",
-        'attachment; filename="converted-pdfs.zip"'
+        `attachment; filename="${archiveName}"`
       );
       return res.send(zipBuffer);
     } finally {

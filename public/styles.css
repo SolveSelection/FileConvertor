@@ -1,11 +1,13 @@
 :root {
   --bg: #f3f7fb;
   --card: #ffffff;
-  --text: #1e293b;
+  --text: #0f172a;
   --muted: #64748b;
-  --accent: #0f766e;
-  --accent-hover: #0b5d57;
-  --border: #cbd5e1;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --border: #dbe3ef;
+  --danger: #dc2626;
+  --danger-hover: #b91c1c;
 }
 
 * {
@@ -14,7 +16,7 @@
 
 body {
   margin: 0;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: Inter, "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   color: var(--text);
   background: radial-gradient(circle at top right, #dbeafe, var(--bg) 45%);
 }
@@ -28,21 +30,50 @@ body {
 
 .card {
   width: 100%;
-  max-width: 680px;
+  max-width: 780px;
   background: var(--card);
   border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 10px 30px rgba(30, 41, 59, 0.08);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 20px 45px rgba(15, 23, 42, 0.08);
 }
 
 h1 {
   margin: 0 0 8px;
+  font-size: 1.75rem;
 }
 
 .subtitle {
-  margin: 0 0 20px;
+  margin: 0;
   color: var(--muted);
+}
+
+.hero {
+  margin-bottom: 20px;
+}
+
+.panel {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: #fbfdff;
+  padding: 16px;
+}
+
+.panel + .panel {
+  margin-top: 14px;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .label {
@@ -53,7 +84,8 @@ h1 {
 
 input,
 select,
-button {
+button,
+.btn {
   width: 100%;
   font: inherit;
   padding: 10px 12px;
@@ -61,8 +93,51 @@ button {
   border: 1px solid var(--border);
 }
 
+.hidden-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
+}
+
+.empty-state {
+  margin: 8px 0 0;
+  color: var(--muted);
+}
+
+.file-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+
+.file-list li {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 10px;
+  align-items: center;
+  padding: 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #fff;
+}
+
+.file-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.file-meta {
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
 .grid {
-  margin-top: 14px;
+  margin-top: 4px;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 12px;
@@ -86,22 +161,50 @@ button {
   width: auto;
 }
 
-button {
+.btn {
+  cursor: pointer;
+}
+
+.btn-primary {
   margin-top: 18px;
   border: 0;
   background: var(--accent);
   color: #fff;
   font-weight: 700;
-  cursor: pointer;
 }
 
-button:hover {
+.btn-primary:hover {
   background: var(--accent-hover);
 }
 
-button:disabled {
+.btn-secondary {
+  width: auto;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.btn-secondary:hover {
+  background: #f1f5f9;
+}
+
+.btn-danger {
+  width: auto;
+  border: 1px solid #fecaca;
+  background: #fff1f2;
+  color: var(--danger);
+  font-weight: 600;
+}
+
+.btn-danger:hover {
+  background: #ffe4e6;
+  border-color: #fda4af;
+}
+
+.btn:disabled {
   opacity: 0.7;
-  cursor: wait;
+  cursor: not-allowed;
 }
 
 .status {
@@ -111,6 +214,15 @@ button:disabled {
 }
 
 @media (max-width: 640px) {
+  .card {
+    padding: 18px;
+  }
+
+  .panel-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
   .grid {
     grid-template-columns: 1fr;
   }
