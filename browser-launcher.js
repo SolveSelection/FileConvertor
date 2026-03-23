@@ -1,5 +1,23 @@
 "use strict";
 
+function withSandboxArgs(args = []) {
+  const result = [...args];
+  const isRootUser =
+    typeof process.getuid === "function" && process.getuid() === 0;
+  const forceNoSandbox = process.env.PUPPETEER_NO_SANDBOX === "true";
+
+  if (isRootUser || forceNoSandbox) {
+    if (!result.includes("--no-sandbox")) {
+      result.push("--no-sandbox");
+    }
+    if (!result.includes("--disable-setuid-sandbox")) {
+      result.push("--disable-setuid-sandbox");
+    }
+  }
+
+  return result;
+}
+
 async function launchBrowser() {
   const isVercel = Boolean(process.env.VERCEL);
 
@@ -9,7 +27,7 @@ async function launchBrowser() {
 
     const executablePath = await chromium.executablePath();
     return puppeteerCore.launch({
-      args: chromium.args,
+      args: withSandboxArgs(chromium.args),
       defaultViewport: chromium.defaultViewport,
       executablePath,
       headless: chromium.headless,
@@ -17,7 +35,10 @@ async function launchBrowser() {
   }
 
   const puppeteer = require("puppeteer");
-  return puppeteer.launch({ headless: "new" });
+  return puppeteer.launch({
+    headless: "new",
+    args: withSandboxArgs(),
+  });
 }
 
 module.exports = {
