@@ -101,8 +101,22 @@ button,
   height: 1px;
 }
 
+.drop-zone {
+  margin-top: 10px;
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+  background: #f8fbff;
+  padding: 10px;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.drop-zone.drag-over {
+  border-color: var(--accent);
+  background: #eff6ff;
+}
+
 .empty-state {
-  margin: 8px 0 0;
+  margin: 0;
   color: var(--muted);
 }
 

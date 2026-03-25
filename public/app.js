@@ -4,10 +4,12 @@ const form = document.getElementById("convertForm");
 const statusEl = document.getElementById("status");
 const submitBtn = document.getElementById("submitBtn");
 const addFilesBtn = document.getElementById("addFilesBtn");
+const selectAllBtn = document.getElementById("selectAllBtn");
 const removeFilesBtn = document.getElementById("removeFilesBtn");
 const filePicker = document.getElementById("htmlFilesPicker");
 const fileListEl = document.getElementById("fileList");
 const emptyStateEl = document.getElementById("emptyState");
+const dropZoneEl = document.getElementById("dropZone");
 
 const selectedFiles = new Map();
 
@@ -23,8 +25,12 @@ function formatSize(bytes) {
 
 function updateFileControls() {
   const hasFiles = selectedFiles.size > 0;
+  const selectedCount = fileListEl.querySelectorAll(".file-check:checked").length;
+
   emptyStateEl.style.display = hasFiles ? "none" : "block";
+  selectAllBtn.disabled = !hasFiles;
   removeFilesBtn.disabled = !hasFiles;
+  removeFilesBtn.textContent = selectedCount > 0 ? "Remove selected" : "Remove all";
 }
 
 function renderFiles() {
@@ -38,6 +44,7 @@ function renderFiles() {
     checkbox.className = "file-check";
     checkbox.value = key;
     checkbox.setAttribute("aria-label", `Select ${file.name}`);
+    checkbox.addEventListener("change", updateFileControls);
 
     const name = document.createElement("span");
     name.className = "file-name";
@@ -56,6 +63,18 @@ function renderFiles() {
   updateFileControls();
 }
 
+function addFiles(files) {
+  for (const file of files) {
+    if (!file.name.toLowerCase().endsWith(".html")) {
+      continue;
+    }
+    selectedFiles.set(fileKey(file), file);
+  }
+
+  renderFiles();
+  setStatus("", false);
+}
+
 function setStatus(message, isError) {
   statusEl.textContent = message;
   statusEl.style.color = isError ? "#b91c1c" : "#475569";
@@ -67,24 +86,55 @@ addFilesBtn.addEventListener("click", () => {
 
 filePicker.addEventListener("change", () => {
   const files = Array.from(filePicker.files || []);
-  for (const file of files) {
-    if (!file.name.toLowerCase().endsWith(".html")) {
-      continue;
-    }
-    selectedFiles.set(fileKey(file), file);
-  }
+  addFiles(files);
 
   filePicker.value = "";
-  renderFiles();
-  setStatus("", false);
+});
+
+selectAllBtn.addEventListener("click", () => {
+  const checkboxes = fileListEl.querySelectorAll(".file-check");
+  for (const checkbox of checkboxes) {
+    checkbox.checked = true;
+  }
+  updateFileControls();
 });
 
 removeFilesBtn.addEventListener("click", () => {
   const checked = fileListEl.querySelectorAll(".file-check:checked");
-  for (const item of checked) {
-    selectedFiles.delete(item.value);
+
+  if (checked.length > 0) {
+    for (const item of checked) {
+      selectedFiles.delete(item.value);
+    }
+  } else {
+    selectedFiles.clear();
   }
+
   renderFiles();
+});
+
+for (const eventName of ["dragenter", "dragover", "dragleave", "drop"]) {
+  dropZoneEl.addEventListener(eventName, (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+  });
+}
+
+for (const eventName of ["dragenter", "dragover"]) {
+  dropZoneEl.addEventListener(eventName, () => {
+    dropZoneEl.classList.add("drag-over");
+  });
+}
+
+for (const eventName of ["dragleave", "drop"]) {
+  dropZoneEl.addEventListener(eventName, () => {
+    dropZoneEl.classList.remove("drag-over");
+  });
+}
+
+dropZoneEl.addEventListener("drop", (event) => {
+  const files = Array.from(event.dataTransfer?.files || []);
+  addFiles(files);
 });
 
 form.addEventListener("submit", async (event) => {

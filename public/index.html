@@ -24,6 +24,9 @@
                 <button id="addFilesBtn" class="btn btn-secondary" type="button">
                   Add more files
                 </button>
+                <button id="selectAllBtn" class="btn btn-secondary" type="button" disabled>
+                  Select all
+                </button>
                 <button
                   id="removeFilesBtn"
                   class="btn btn-danger"
@@ -43,10 +46,12 @@
               class="hidden-input"
             />
 
-            <p id="emptyState" class="empty-state">
-              No files selected yet. Click <strong>Add more files</strong>.
-            </p>
-            <ul id="fileList" class="file-list" aria-live="polite"></ul>
+            <div id="dropZone" class="drop-zone" aria-label="Drop HTML files here">
+              <p id="emptyState" class="empty-state">
+                No files selected yet. Click <strong>Add more files</strong> or drag files here.
+              </p>
+              <ul id="fileList" class="file-list" aria-live="polite"></ul>
+            </div>
           </section>
 
           <section class="panel">
